@@ -1,0 +1,242 @@
+{
+	"mode": "browser",
+	"block": {
+		"controls": [
+			{
+				"id": "mood",
+				"label": "Mood",
+				"hint": "A time of day, a cloud cover, a wind and a weather together. Picking one moves the sliders.",
+				"type": "choice",
+				"options": [
+					{
+						"value": "day",
+						"label": "Fair day",
+						"image": "thumbs/moods/day.webp"
+					},
+					{
+						"value": "dawn",
+						"label": "Dawn",
+						"image": "thumbs/moods/dawn.webp"
+					},
+					{
+						"value": "dusk",
+						"label": "Dusk",
+						"image": "thumbs/moods/dusk.webp"
+					},
+					{
+						"value": "wisps",
+						"label": "High wisps",
+						"image": "thumbs/moods/wisps.webp"
+					},
+					{
+						"value": "overcast",
+						"label": "Overcast",
+						"image": "thumbs/moods/overcast.webp"
+					},
+					{
+						"value": "storm",
+						"label": "Storm",
+						"image": "thumbs/moods/storm.webp"
+					},
+					{
+						"value": "night",
+						"label": "Night",
+						"image": "thumbs/moods/night.webp"
+					}
+				],
+				"default": "dusk",
+				"essential": true
+			},
+			{
+				"id": "time",
+				"label": "Time of day",
+				"hint": "Hours, 0 to 24: the sun, the moon, the colours of the sky and the light on the clouds.",
+				"type": "number",
+				"min": 0,
+				"max": 24,
+				"step": 0.05,
+				"default": 17.45,
+				"unit": "h",
+				"essential": true
+			},
+			{
+				"id": "cover",
+				"label": "Cloud cover",
+				"hint": "From a clear sky, through scattered cumulus at about half, to a closed deck.",
+				"type": "number",
+				"min": 0,
+				"max": 1,
+				"step": 0.01,
+				"default": 0.3,
+				"essential": true
+			},
+			{
+				"id": "wind",
+				"label": "Wind",
+				"hint": "How fast the clouds drift and churn, and how much the lake ripples. At 0 the sky holds still.",
+				"type": "number",
+				"min": 0,
+				"max": 80,
+				"step": 1,
+				"default": 12,
+				"unit": " m/s",
+				"essential": true
+			},
+			{
+				"id": "rain",
+				"label": "Rain",
+				"hint": "Streaks of rain round the camera. It rains from any sky, so pair it with cover for a real downpour.",
+				"type": "number",
+				"min": 0,
+				"max": 1,
+				"step": 0.01,
+				"default": 0,
+				"essential": true
+			},
+			{
+				"id": "wind_dir",
+				"label": "Wind direction",
+				"hint": "Where the wind blows to, in degrees.",
+				"type": "number",
+				"min": 0,
+				"max": 360,
+				"step": 1,
+				"default": 200,
+				"unit": "°"
+			},
+			{
+				"id": "puffs",
+				"label": "Puff size",
+				"hint": "Above 1, more and smaller clouds; below 1, fewer and bigger.",
+				"type": "number",
+				"min": 0.4,
+				"max": 2.5,
+				"step": 0.05,
+				"default": 1
+			},
+			{
+				"id": "detail",
+				"label": "Edge detail",
+				"hint": "The scale of the erosion that carves the clouds: low is soft and rounded, high is busy and torn.",
+				"type": "number",
+				"min": 0.4,
+				"max": 2.5,
+				"step": 0.05,
+				"default": 1
+			},
+			{
+				"id": "depth",
+				"label": "Cloud depth",
+				"hint": "How tall the cloud layer is, against what the weather asks for.",
+				"type": "number",
+				"min": 0.5,
+				"max": 2.5,
+				"step": 0.05,
+				"default": 1,
+				"unit": "×"
+			},
+			{
+				"id": "paint",
+				"label": "Painted bands",
+				"hint": "Bands the light on the clouds into flat steps, for a more drawn look.",
+				"type": "number",
+				"min": 0,
+				"max": 1,
+				"step": 0.01,
+				"default": 0
+			},
+			{
+				"id": "sun_arc",
+				"label": "Sun height",
+				"hint": "How high the sun gets at noon, in degrees.",
+				"type": "number",
+				"min": 15,
+				"max": 85,
+				"step": 1,
+				"default": 62,
+				"unit": "°"
+			},
+			{
+				"id": "shadows",
+				"label": "Cloud shadows",
+				"hint": "How dark the clouds' shadows lie on the land.",
+				"type": "number",
+				"min": 0,
+				"max": 1,
+				"step": 0.01,
+				"default": 1
+			},
+			{
+				"id": "cycle",
+				"label": "Time passing",
+				"hint": "Runs the time of day on its own, a day in a minute, until turned off.",
+				"type": "toggle",
+				"default": false
+			},
+			{
+				"id": "storms",
+				"label": "Lightning by itself",
+				"hint": "Strikes every few seconds while the weather is a storm.",
+				"type": "toggle",
+				"default": true
+			},
+			{
+				"id": "quality",
+				"label": "Quality",
+				"hint": "How much the clouds spend. Auto starts at Medium and drops to Low if frames run slow. Changing it compiles nothing.",
+				"type": "choice",
+				"options": [
+					{
+						"value": "auto",
+						"label": "Auto"
+					},
+					{
+						"value": "low",
+						"label": "Low"
+					},
+					{
+						"value": "medium",
+						"label": "Medium"
+					},
+					{
+						"value": "high",
+						"label": "High"
+					}
+				],
+				"default": "auto"
+			}
+		],
+		"presets": [],
+		"triggers": [
+			{
+				"id": "strike",
+				"label": "Lightning",
+				"hint": "A strike somewhere in view, with the clouds lit round it."
+			},
+			{
+				"id": "reset",
+				"label": "Reset",
+				"hint": "Everything back to the start: the mood, every slider and the view."
+			}
+		]
+	},
+	"credits": [
+		{
+			"files": "assets/",
+			"license": "MIT",
+			"source": "https://github.com/SkyeShark/Eanpa-Sky",
+			"author": "SkyeShark (Eanpa Sky: the sky and weather model, commit a197d3d. Its code only)"
+		},
+		{
+			"files": "assets/",
+			"license": "MIT",
+			"source": "https://github.com/mrdoob/three.js",
+			"author": "three.js authors"
+		},
+		{
+			"files": "thumbs/",
+			"license": "MIT",
+			"author": "Patch (stills of this demo)"
+		}
+	]
+}

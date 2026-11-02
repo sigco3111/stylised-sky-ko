@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stylised sky</title>
+<link rel="icon" href="data:," />
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #141a26; }
+  #view { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; cursor: grab; }
+  #view.drag { cursor: grabbing; }
+  #cover { position: fixed; inset: 0; background: #141a26; }
+  .hud { position: fixed; pointer-events: none; font: 500 11px/1.3 ui-monospace, 'Cascadia Mono', Consolas, monospace; color: rgba(255, 255, 255, 0.82); text-shadow: 0 1px 3px rgba(10, 20, 40, 0.65); }
+  #credit { left: 12px; top: 10px; }
+  #tip { right: 12px; bottom: 8px; }
+  #nogpu { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; padding: 24px; background: #141a26; color: #e4e4e7; font: 400 14px/1.5 system-ui, sans-serif; }
+  #nogpu.on { display: flex; }
+  #nogpu .card { max-width: 440px; padding: 22px 24px; border-radius: 12px; background: rgba(9, 9, 11, 0.62); border: 1px solid rgba(255, 255, 255, 0.1); }
+  #nogpu h1 { margin: 0 0 8px; font: 600 17px/1.3 system-ui, sans-serif; color: #fafafa; }
+  #nogpu p { margin: 0 0 8px; color: #c4c4cc; }
+  #nogpu small { display: block; margin-top: 10px; color: #a1a1aa; font: 500 11px/1.4 ui-monospace, monospace; }
+  #nogpu button { margin-top: 8px; padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); background: #27272a; color: #fafafa; font: inherit; cursor: pointer; }
+</style>
+</head>
+<body>
+<canvas id="view" tabindex="0"></canvas>
+<div id="cover"></div>
+<div id="credit" class="hud" hidden>Sky and clouds: Eanpa Sky by SkyeShark (MIT)</div>
+<div id="tip" class="hud" hidden>Drag to look round. Scroll to zoom.</div>
+<div id="nogpu"><div class="card">
+  <h1>This demo needs a graphics card</h1>
+  <p class="say">The sky is drawn with WebGPU or WebGL 2, and this browser can't give it either.</p>
+  <p class="more">It plays in Patch Desktop, and in any recent Chrome or Edge with hardware acceleration turned on.</p>
+  <button hidden>Reload</button>
+  <small class="why"></small>
+</div></div>
+<script type="module" src="./src/demo.js"></script>
+</body>
+</html>

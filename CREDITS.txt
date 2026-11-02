@@ -1,0 +1,9 @@
+Stylised sky (a block demo on Patch)
+
+Eanpa Sky by SkyeShark, MIT, (c) 2026 SkyeShark.
+  https://github.com/SkyeShark/Eanpa-Sky (commit a197d3d)
+  The sky model, code only: the time-of-day palette, cloud density and lighting, sun and moon arcs, weather states.
+  None of its audio, textures or models are used.
+  Licence: licenses/LICENSE-eanpa-sky.txt
+three.js: MIT, the three.js authors. https://github.com/mrdoob/three.js
+The rewrite for load time, the land, lake, trees, rain and lightning (src/): Patch, MIT. Made in code, with no textures, models or sounds.
