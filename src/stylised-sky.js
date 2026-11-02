@@ -59,9 +59,9 @@ const KEYS = Object.keys(WEATHER.fair).filter((k) => k !== 'wispTint');
 
 /** How much each quality spends: the march's steps, the taps towards the sun and how big the cloud picture is. No shader changes. */
 export const QUALITY = {
-	low: { steps: 20, lightSteps: 3, scale: 1 / 3, maxHeight: 360, mirrorSteps: 12, history: 0.1 },
-	medium: { steps: 28, lightSteps: 4, scale: 1 / 2, maxHeight: 540, mirrorSteps: 18, history: 0.1 },
-	high: { steps: 48, lightSteps: 6, scale: 1 / 1.5, maxHeight: 900, mirrorSteps: 28, history: 0.12 },
+	low: { steps: 20, lightSteps: 3, scale: 1 / 3, minHeight: 240, maxHeight: 360, mirrorSteps: 12, history: 0.1 },
+	medium: { steps: 28, lightSteps: 4, scale: 1 / 2, minHeight: 400, maxHeight: 540, mirrorSteps: 18, history: 0.1 },
+	high: { steps: 48, lightSteps: 6, scale: 1 / 1.5, minHeight: 540, maxHeight: 900, mirrorSteps: 28, history: 0.12 },
 };
 
 // ---------------- noise, baked once: no files to load ----------------
@@ -780,7 +780,7 @@ export async function createStylisedSky({ renderer, scene, camera, quality = 'me
 		},
 		resize() {
 			const size = renderer.getDrawingBufferSize(new THREE.Vector2());
-			const scale = Math.min(tier.scale, tier.maxHeight / Math.max(1, size.y));
+			const scale = Math.min(1, Math.max(Math.min(tier.scale, tier.maxHeight / Math.max(1, size.y)), tier.minHeight / Math.max(1, size.y)));
 			const w = Math.max(16, Math.round(size.x * scale));
 			const h = Math.max(16, Math.round(size.y * scale));
 			if (rawTarget.width !== w || rawTarget.height !== h) {

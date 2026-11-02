@@ -21,11 +21,15 @@ import { createStylisedSky } from './stylised-sky.js';
 
 const renderer = new THREE.WebGPURenderer({ antialias: true });
 await renderer.init();
+renderer.setSize(innerWidth, innerHeight);
+document.body.append(renderer.domElement);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
 const scene = new THREE.Scene();
 scene.fog = new THREE.Fog(0x8899aa, 1400, 17000);
 const camera = new THREE.PerspectiveCamera(58, innerWidth / innerHeight, 0.5, 32000);
+camera.position.set(0, 6, 0);
+camera.rotation.x = 0.25;
 
 const sky = await createStylisedSky({ renderer, scene, camera, quality: 'medium' });
 const sun = new THREE.DirectionalLight();
@@ -72,7 +76,7 @@ Call `sky.resize()` after you resize the renderer.
 
 - **Flying through or above the clouds.** The clouds are a shell seen from below. A camera above about 700 m gets wrong pictures, and it can't enter one. For a flight game, use a real volumetric sky.
 - **Realism.** The clouds are soft and painted, and don't have the fine detail of a physically based sky. Patch's realistic clouds block is the one for that.
-- **It's not free on the GPU.** It's a ray march on every cloud pixel, at reduced size. Very weak integrated graphics will want `low`, and it hasn't been tried on one yet.
+- **It's not free on the GPU.** It's a ray march on every cloud pixel, at reduced size. Weak integrated graphics will want `low`, and it hasn't been tried on one yet.
 - **Sudden jumps.** A history collects the clouds over about ten frames, so an instant change of cover or time takes a moment to settle. Moving the view doesn't smear.
 - **Storms are stylised.** There's dark cloud, rain and a flash, but no shelf cloud or rain shafts in the distance, and the sky doesn't light up evenly as in a real storm.
 - **No reflections or image-based light for your materials.** It sets a sun, a hemisphere light and fog. Shiny things won't mirror the clouds unless you use `waterNode`.
@@ -99,6 +103,17 @@ And the sky itself got cheaper to run and to change:
 - **High cloud.** Four noise functions a pixel became three reads of a baked map.
 - **Shadows.** A shadow map rendered by a cloud march at 10 Hz became two texture reads in the receiving material.
 - **Left out.** The ring world, the sealed storm canopy, reflection bakes, the moon and star textures, and the cirrus atlas.
+
+**Measured here,** on an RTX 4090 with another game and other work on the card:
+
+| | Eanpa Sky's demo, first visit | This block, first visit |
+|---|---|---|
+| Time until it shows | 70.9 s | 2.9 s (2.1 s from the page starting, 1.1 s of it shaders) |
+| Download | 199 MB | 0.9 MB, 0.26 MB of it gzipped code |
+| Largest shader | 169,309 characters, by its own notes | 14,899 characters |
+| Worst frame in the first 30 s | not measured | 18 ms |
+
+Both were a new browser profile on a 2560 x 1400 window, but the graphics driver keeps its own shader cache, so a real first visit on another PC can take longer. The sky's own passes took roughly 0.5 to 1.3 ms a frame at 1080p here, too noisy with the card shared to rank the quality levels by. That says little about a laptop: **it has only been run on this card.**
 
 <!-- measured -->
 

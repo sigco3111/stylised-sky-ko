@@ -175,6 +175,7 @@ export function buildGround(scene, sky) {
 
 	// ---------------- water: mirrors the whole sky, clouds and all, with a few moving ripples ----------------
 	const wind = uniform(0.5);
+	const rainOnWater = uniform(0);
 	const fogColor = uniform(new THREE.Color());
 	// The land's reflection, its own small picture: see the end of this function.
 	const mirrorLand = new THREE.RenderTarget(4, 4, { type: THREE.HalfFloatType, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, generateMipmaps: false });
@@ -191,7 +192,7 @@ export function buildGround(scene, sky) {
 		const r2 = cos(dot(p, vec2(-0.09, 0.19)).add(t.mul(1.5))).mul(0.3);
 		const r3 = cos(dot(p, vec2(0.47, 0.31)).add(t.mul(2.1))).mul(0.14);
 		const r4 = sin(dot(p, vec2(-0.71, 0.53)).add(t.mul(2.7))).mul(0.1);
-		const size = wind.mul(0.03).add(0.004).mul(float(1).sub(smoothstep(40, 1500, dist)));
+		const size = wind.mul(0.03).add(0.004).add(rainOnWater.mul(0.09)).mul(float(1).sub(smoothstep(40, 1100, dist)));
 		const nx = r1.mul(0.11).add(r2.mul(-0.09)).add(r3.mul(0.47)).add(r4.mul(-0.71)).mul(size);
 		const nz = r1.mul(0.07).add(r2.mul(0.19)).add(r3.mul(0.31)).add(r4.mul(0.53)).mul(size);
 		const normal = normalize(vec3(nx, 1, nz)).toVar();
@@ -252,8 +253,9 @@ export function buildGround(scene, sky) {
 			renderer.setRenderTarget(null);
 			renderer.setClearAlpha(alpha);
 		},
-		update({ windKnots, fog, sun, hemi }) {
+		update({ windKnots, fog, sun, hemi, rain }) {
 			wind.value = Math.min(1, windKnots / 50);
+			rainOnWater.value = rain;
 			fogColor.value.copy(fog);
 			// The land's own light, near enough, without lighting it a second time.
 			mirrorLight.value.copy(sun.color).multiplyScalar(sun.intensity * Math.max(0, sun.position.y / 1000) * 0.26).add(new THREE.Color(hemi.color).multiplyScalar(hemi.intensity * 0.2));
@@ -264,7 +266,7 @@ export function buildGround(scene, sky) {
 }
 
 /** Rain: streaks that wrap round the camera, moved entirely in the vertex shader, so it adds one draw and no work on the CPU. */
-export function buildRain(scene, count = 3200) {
+export function buildRain(scene, count = 7000) {
 	const seeds = new Float32Array(count * 4 * 3);
 	const corners = new Float32Array(count * 4 * 2);
 	const index = new Uint32Array(count * 6);
@@ -308,9 +310,9 @@ export function buildRain(scene, count = 3200) {
 	const toEye = normalize(cameraPosition.sub(wrapped));
 	const side = normalize(cross(axis, toEye));
 	const shown = seed.x.lessThan(amount).toFloat();
-	material.positionNode = wrapped.add(side.mul(corner.x).mul(0.011).mul(shown)).add(axis.mul(corner.y).mul(1.15).mul(shown));
+	material.positionNode = wrapped.add(side.mul(corner.x).mul(0.014).mul(shown)).add(axis.mul(corner.y).mul(1.15).mul(shown));
 	material.colorNode = tint;
-	material.opacityNode = corner.y.mul(0.2).mul(smoothstep(1.5, 9, wrapped.sub(cameraPosition).length()));
+	material.opacityNode = corner.y.mul(0.42).mul(smoothstep(1.5, 9, wrapped.sub(cameraPosition).length()));
 	const mesh = new THREE.Mesh(g, material);
 	mesh.frustumCulled = false;
 	mesh.renderOrder = 10;

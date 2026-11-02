@@ -221,7 +221,7 @@ export async function boot({ block, recipe, times, started, deviceLost }) {
 		const f = sky.uniforms.flash.value;
 		bolt.update(f);
 		sky.applyToLights({ sun, hemi, fog: scene.fog });
-		ground.update({ windKnots: v.wind, fog: sky.fogColor, sun, hemi });
+		ground.update({ windKnots: v.wind, fog: sky.fogColor, sun, hemi, rain: sky.rain });
 		const r = (v.wind_dir * Math.PI) / 180;
 		windVec.set(Math.sin(r) * v.wind, 0, Math.cos(r) * v.wind);
 		rainTint.copy(sky.fogColor).multiplyScalar(1.1).addScalar(0.05 + f * 0.3);
