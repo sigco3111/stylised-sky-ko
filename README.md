@@ -11,6 +11,14 @@ It's the sky and clouds of [Eanpa Sky](https://github.com/SkyeShark/Eanpa-Sky) b
 
 Sky model: Eanpa Sky by SkyeShark (MIT), its code only. Code here is MIT, and there are no art files beyond stills of the demo.
 
+## What this owns
+
+- **Renderer:** WebGPU, and it takes yours: `createStylisedSky({ renderer, scene, camera })` wants an initialised `WebGPURenderer`. On `WebGLRenderer` it fails with `TypeError: Cannot read properties of undefined (reading 'replace')`. The demo can force `WebGPURenderer`'s WebGL backend, which wasn't run with other blocks.
+- **Frame loop:** It doesn't draw the frame. Call `sky.update(dt)` and `sky.render()`, which draws the clouds into its own targets, then your own `renderer.render(scene, camera)`.
+- **three:** `package.json` pins 0.186.1. It imports `three/webgpu` and `three/tsl`, and no other library has to match.
+- **Copy:** `src/stylised-sky.js`.
+- **Elsewhere:** `createStylisedSky` adds a dome to your `scene`, with `depthWrite: false` and `renderOrder` -100, so a host's own sky drawn later covers it, as forests' did.
+
 ## Use it in a game
 
 Copy `src/stylised-sky.js` into your game. It needs `three` 0.186 and nothing else.
