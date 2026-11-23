@@ -1,131 +1,60 @@
----
-kind: effect
-engine: three
----
+# Stylised Sky 한글판 (그림 같은 하늘)
 
-# Stylised sky
+![실행 화면: 황혼](docs/screenshots/main.png)
 
-A painted-looking sky for three.js games: soft cumulus with a time of day, weather that morphs, and clouds' shadows on your ground. It loads in about 2 seconds, with nothing to download but code.
+patch.gg의 @patch가 만든 three.js용 그림체 하늘 블록 데모 **Stylised sky**의 한글판입니다. 부드러운 뭉게구름, 하루의 시간대, 자연스럽게 변하는 날씨, 땅에 드리운 구름 그림자를 브라우저에서 바로 볼 수 있습니다. 코드만 받으면 되고 약 2초 만에 로드됩니다.
 
-It's the sky and clouds of [Eanpa Sky](https://github.com/SkyeShark/Eanpa-Sky) by SkyeShark (MIT), lifted out of its engine: the palette through the day, the cloud shapes and the way they catch the light. One file, `src/stylised-sky.js`, runs on three's WebGPU renderer and on its WebGL 2 fallback. There are no textures to fetch: the noise it needs is baked in the browser at startup. In the live demo, pick a mood, drag to look round, scroll to zoom, and move the time, cover, wind and rain.
+- 원작: https://patch.gg/patch/stylised-sky (MIT)
+- 한글판 실행: https://sigco3111.github.io/stylised-sky-ko/
 
-Sky model: Eanpa Sky by SkyeShark (MIT), its code only. Code here is MIT, and there are no art files beyond stills of the demo.
+하늘과 구름 모델은 SkyeShark의 [Eanpa Sky](https://github.com/SkyeShark/Eanpa-Sky)(MIT)에서 코드만 가져온 것으로, 하루 동안의 색표, 구름 형태, 빛을 받는 방식을 담고 있습니다. 가져갈 텍스처가 없어 필요한 노이즈는 시작할 때 브라우저에서 구워 냅니다.
 
-## What this owns
+## 주요 기능
 
-- **Renderer:** WebGPU, and it takes yours: `createStylisedSky({ renderer, scene, camera })` wants an initialised `WebGPURenderer`. On `WebGLRenderer` it fails with `TypeError: Cannot read properties of undefined (reading 'replace')`. The demo can force `WebGPURenderer`'s WebGL backend, which wasn't run with other blocks.
-- **Frame loop:** It doesn't draw the frame. Call `sky.update(dt)` and `sky.render()`, which draws the clouds into its own targets, then your own `renderer.render(scene, camera)`.
-- **three:** `package.json` pins 0.186.1. It imports `three/webgpu` and `three/tsl`, and no other library has to match.
-- **Copy:** `src/stylised-sky.js`.
-- **Elsewhere:** `createStylisedSky` adds a dome to your `scene`, with `depthWrite: false` and `renderOrder` -100, so a host's own sky drawn later covers it, as forests' did.
+- 분위기 7종(맑은 날, 새벽, 황혼, 높은 새털구름, 흐림, 폭풍, 밤)을 고르면 시간대, 구름량, 바람, 날씨가 한 번에 바뀝니다.
+- 시간대(0~24시), 구름량, 바람, 비를 슬라이더로 직접 조절할 수 있습니다.
+- 풍향, 구름 덩어리 크기, 가장자리 디테일, 구름 두께, 그림체 명암 단계, 태양 높이, 구름 그림자 같은 세부 조절과 시간 흐름, 자동 번개 스위치, 품질 선택을 제공합니다.
+- 번개, 초기화 트리거 버튼.
+- 드래그로 둘러보고 스크롤로 확대/축소합니다.
 
-## Use it in a game
+원작은 patch.gg 블록 데모라 조작 패널이 patch.gg 호스트 페이지에 그려집니다. 이 한글판은 GitHub Pages 단독 배포라 같은 `recipe.json`을 읽어 페이지 안에 한글 조작 패널을 직접 그리도록 추가했습니다. 하늘과 데모 동작 자체는 원작과 같습니다.
 
-Copy `src/stylised-sky.js` into your game. It needs `three` 0.186 and nothing else.
+## 실행 화면
 
-```js
-import * as THREE from 'three/webgpu';
-import { createStylisedSky } from './stylised-sky.js';
+| 폭풍 + 번개 | 밤 |
+|---|---|
+| ![폭풍](docs/screenshots/storm.png) | ![밤](docs/screenshots/night.png) |
 
-const renderer = new THREE.WebGPURenderer({ antialias: true });
-await renderer.init();
-renderer.setSize(innerWidth, innerHeight);
-document.body.append(renderer.domElement);
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
+| 새벽 | 한글 조작 패널 |
+|---|---|
+| ![새벽](docs/screenshots/dawn.png) | ![조작 패널](docs/screenshots/panel.png) |
 
-const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0x8899aa, 1400, 17000);
-const camera = new THREE.PerspectiveCamera(58, innerWidth / innerHeight, 0.5, 32000);
-camera.position.set(0, 6, 0);
-camera.rotation.x = 0.25;
+## 설치 및 실행
 
-const sky = await createStylisedSky({ renderer, scene, camera, quality: 'medium' });
-const sun = new THREE.DirectionalLight();
-const hemi = new THREE.HemisphereLight();
-scene.add(sun, hemi);
-sky.applyToLights({ sun, hemi, fog: scene.fog }); // the first call tells it which light is the sun
+정적 사이트라 빌드 결과물(`dist/`)만 있으면 됩니다. 이 저장소의 `gh-pages` 브랜치가 그대로 배포본입니다.
 
-// Your ground: cloud shadows fall on its sun light. Call this before the material is first drawn.
-const groundMaterial = new THREE.MeshStandardNodeMaterial({ color: 0x55803a, roughness: 1 });
-sky.receiveCloudShadows(groundMaterial);
-scene.add(new THREE.Mesh(new THREE.CircleGeometry(9000, 64).rotateX(-Math.PI / 2), groundMaterial));
+직접 빌드하려면:
 
-sky.setTime(17.4);          // hours, 0 to 24
-sky.setCover(0.4, true);    // 0 clear, about 0.4 scattered cumulus, 1 a closed deck; true: at once
-sky.setWind(16);            // metres a second
-
-await sky.warm(scene);      // compiles every pass: do this behind your loading screen
-
-let last = performance.now();
-renderer.setAnimationLoop((now) => {
-	sky.update((now - last) / 1000);
-	last = now;
-	sky.applyToLights({ sun, hemi, fog: scene.fog });
-	sky.render();           // draws the clouds into their own targets: call it before the scene
-	renderer.render(scene, camera);
-});
+```bash
+npm install
+npm run build   # dist/ 생성 (index.html이 최상위)
+npm run dev     # 개발 서버: http://127.0.0.1:5497/
 ```
 
-Call `sky.resize()` after you resize the renderer.
+## 기술 노트
 
-### What else it does
+- 렌더러: three.js 0.186.1의 WebGPURenderer(WebGL 2 폴백 포함). 그래픽 카드가 없는 환경에서는 안내 카드를 보여줍니다.
+- 하늘 한 파일: `src/stylised-sky.js`. 게임에 붙일 때는 이 파일만 복사하면 됩니다.
+- 번역 범위: 분위기 라벨/설명, 컨트롤 15종 라벨/설명, 트리거 2종, 로딩 진행 문구, GPU 오류 안내, HUD 문구 등 코드베이스의 사용자 노출 문자열 전체. `recipe.json`은 `make-recipe.mjs`가 생성하므로 생성기 쪽 문자열도 함께 번역했습니다.
+- 한글판 추가물: `src/panel.js`(스탠드얼론 조작 패널)와 로딩 진행 표시. patch.gg에 임베드될 때는 원래대로 호스트 패널을 씁니다.
 
-| Call | What it does |
-|---|---|
-| `sky.setWeather('storm', 20)` | `clear`, `fair`, `overcast`, `rain` or `storm`, morphing over that many seconds. Nothing compiles. Set `sky.setCover` to go with it: the demo's Storm is 0.74 |
-| `sky.rain` | How much rain the weather wants now, 0 to 1. The block doesn't draw rain itself; `buildRain` in `src/ground.js` is a small one to copy |
-| `sky.flash(position, 1)` | Lights the clouds from inside around a world position, for lightning. `buildBolt` in `src/ground.js` draws a bolt |
-| `sky.setQuality('low')` | `low`, `medium` or `high`. It only changes how many steps and how big a picture, so it compiles nothing and can change mid-game |
-| `sky.shadowNode(positionWorld)` | The cloud shadow as a TSL number, 1 in the clear, for your own materials. It's two texture reads |
-| `sky.setPuffs(x)`, `sky.setDetail(x)`, `sky.setCloudHeight(x)`, `sky.setPaint(x)` | Bigger or smaller clouds, softer or busier edges, a taller layer, and flat painted bands of light |
-| `createStylisedSky({ reflection: true })` and `sky.waterNode(direction, offset)` | Clouds for mirrored rays, for still water. `src/ground.js` shows it on the demo's lake |
+## 라이선스 및 원작 크레딧
 
-## What it's bad at
-
-- **Flying through or above the clouds.** The clouds are a shell seen from below. A camera above about 700 m gets wrong pictures, and it can't enter one. For a flight game, use a real volumetric sky.
-- **Realism.** The clouds are soft and painted, and don't have the fine detail of a physically based sky. Patch's realistic clouds block is the one for that.
-- **It's not free on the GPU.** It's a ray march on every cloud pixel, at reduced size. Weak integrated graphics will want `low`, and it hasn't been tried on one yet.
-- **Sudden jumps.** A history collects the clouds over about ten frames, so an instant change of cover or time takes a moment to settle. Moving the view doesn't smear.
-- **Storms are stylised.** There's dark cloud, rain and a flash, but no shelf cloud or rain shafts in the distance, and the sky doesn't light up evenly as in a real storm.
-- **No reflections or image-based light for your materials.** It sets a sun, a hemisphere light and fog. Shiny things won't mirror the clouds unless you use `waterNode`.
-- **Rain doesn't wet anything.** The original's wet surfaces aren't in this block.
-
-## What made it slow, and what changed
-
-Eanpa Sky's own demo is a whole first-person world, and most of its wait is that world, not the sky. A cold first visit took 70.9 s and 199 MB here (RTX 4090 with other work on the card, staged by its own loading messages). Its notes record 77.8 s and 132 s on a 5090 laptop, and about 345 MB.
-
-| Its stage | Time | Here |
-|---|---|---|
-| Downloading and building the world: terrain, temple, plants, arms | 21 s, 194 MB | Gone. The sky needs no files |
-| Loading the sky and weather code | 2 s | One small file |
-| Preparing clouds | 5 s | About 1 s for every shader in the demo, ground included |
-| Preparing local reflections | 11 s | Gone |
-| Surface lighting and weather: every world material compiled again with wetness and cloud shadows | 27 s | Gone. Shadows are two texture reads, and wet surfaces aren't in this block |
-| Finishing the first frame | 4 s | Under 1 s, with the clouds' history filled first |
-
-And the sky itself got cheaper to run and to change:
-
-- **Shader size.** Loops written in JavaScript are unrolled into the shader, so its cloud shader is 169,000 characters by its own count. Here every loop runs on the GPU, and how long it runs is a uniform, so changing quality compiles nothing.
-- **Light.** A 3D light volume rebuilt by compute a few times a second became a few taps towards the sun for each lit step, reading only the big shapes.
-- **Passes.** Three cloud passes a pixel with no history became one pass with moving noise, gathered over a few frames. That is also what removes the speckled edges.
-- **High cloud.** Four noise functions a pixel became three reads of a baked map.
-- **Shadows.** A shadow map rendered by a cloud march at 10 Hz became two texture reads in the receiving material.
-- **Left out.** The ring world, the sealed storm canopy, reflection bakes, the moon and star textures, and the cirrus atlas.
-
-**Measured here,** on an RTX 4090 with another game and other work on the card:
-
-| | Eanpa Sky's demo, first visit | This block, first visit |
-|---|---|---|
-| Time until it shows | 70.9 s | 2.9 s (2.1 s from the page starting, 1.1 s of it shaders) |
-| Download | 199 MB | 0.9 MB, 0.26 MB of it gzipped code |
-| Largest shader | 169,309 characters, by its own notes | 14,899 characters |
-| Worst frame in the first 30 s | not measured | 18 ms |
-
-Both were a new browser profile on a 2560 x 1400 window, but the graphics driver keeps its own shader cache, so a real first visit on another PC can take longer. The sky's own passes took roughly 0.5 to 1.3 ms a frame at 1080p here, too noisy with the card shared to rank the quality levels by. That says little about a laptop: **it has only been run on this card.**
-
-<!-- measured -->
-
-## Controls
+- 이 저장소의 코드: MIT (원작과 동일, `LICENSE` 참고)
+- 하늘 모델: SkyeShark의 Eanpa Sky, MIT, 커밋 a197d3d. 코드만 사용했고 원작의 오디오, 텍스처, 모델은 쓰지 않았습니다. 라이선스 사본: `licenses/LICENSE-eanpa-sky.txt`
+- three.js: MIT, three.js authors
+- 땅, 호수, 나무, 비, 번개(`src/ground.js`): Patch, MIT. 모두 코드로 만든 것입니다.
+- `thumbs/`, `cover.jpg`: 이 데모의 화면을 찍은 이미지(Patch)
 
 <!-- controls -->
 **사람용** (블록 페이지에 보이는 컨트롤):
@@ -155,16 +84,3 @@ Both were a new browser profile on a 2560 x 1400 window, but the graphics driver
 | `storms` | 자동 번개 | toggle | default true | 날씨가 폭풍인 동안 몇 초마다 번개가 칩니다. |
 | `quality` | 품질 | choice | `auto`, `low`, `medium`, `high`; default `auto` | 구름이 쓰는 연산량. 자동은 보통에서 시작해 프레임이 느려지면 낮음으로 내립니다. 바꿔도 재컴파일은 없습니다. |
 <!-- /controls -->
-
-## Build the demo
-
-```bash
-npm install
-npm run build
-```
-
-`npm run dev` serves it at http://127.0.0.1:5497/. `tools/` has what checked it: `cost.mjs` (GPU time at each quality), `ends.mjs` (every control at both ends, and Reset), `make-thumbs.mjs` (the pictures).
-
-## Licences
-
-Code MIT. The sky model is from Eanpa Sky by SkyeShark, MIT, at commit `a197d3d`: only its code was used, and no audio, textures or models from that repo are here or in this repo's history. Its licence is in `licenses/LICENSE-eanpa-sky.txt`. three.js is MIT. Every picture in `thumbs/` and `cover.jpg` is a still of this demo. The demo's land, trees, water, rain and lightning (`src/ground.js`) are Patch's, made in code. There's no sound.
