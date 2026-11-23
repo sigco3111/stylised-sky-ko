@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stylised Sky 한글판: 그림 같은 하늘</title>
+<link rel="icon" href="data:," />
+<style>html,body{background:#141a26;height:100%;margin:0;overflow:hidden}#view{touch-action:none;cursor:grab;outline:none;width:100%;height:100%;display:block;position:fixed;inset:0}#view.drag{cursor:grabbing}#cover{background:#141a26;position:fixed;inset:0}#progress{color:#ffffffbf;text-shadow:0 1px 3px #0a1428a6;pointer-events:none;font:500 12px/1.4 ui-monospace,Cascadia Mono,Consolas,monospace;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%)}.hud{pointer-events:none;color:#ffffffd1;text-shadow:0 1px 3px #0a1428a6;font:500 11px/1.3 ui-monospace,Cascadia Mono,Consolas,monospace;position:fixed}#credit{top:10px;left:12px}#tip{bottom:8px;right:12px}#nogpu{color:#e4e4e7;background:#141a26;justify-content:center;align-items:center;padding:24px;font:400 14px/1.5 system-ui,sans-serif;display:none;position:fixed;inset:0}#nogpu.on{display:flex}#nogpu .card{background:#09090b9e;border:1px solid #ffffff1a;border-radius:12px;max-width:440px;padding:22px 24px}#nogpu h1{color:#fafafa;margin:0 0 8px;font:600 17px/1.3 system-ui,sans-serif}#nogpu p{color:#c4c4cc;margin:0 0 8px}#nogpu small{color:#a1a1aa;margin-top:10px;font:500 11px/1.4 ui-monospace,monospace;display:block}#nogpu button{color:#fafafa;font:inherit;cursor:pointer;background:#27272a;border:1px solid #fff3;border-radius:8px;margin-top:8px;padding:6px 12px}#panel{color:#e4e4e7;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);z-index:5;background:#090c14b8;border:1px solid #ffffff1f;border-radius:12px;flex-direction:column;width:216px;max-height:calc(100% - 20px);font:500 11px/1.4 ui-monospace,Cascadia Mono,Consolas,monospace;display:none;position:fixed;top:10px;right:10px}#panel.on{display:flex}#panel .head{cursor:pointer;-webkit-user-select:none;user-select:none;color:#fafafa;justify-content:space-between;align-items:center;padding:8px 10px;display:flex}#panel .head .fold{opacity:.7}#panel .body{scrollbar-width:thin;padding:0 10px 10px;overflow-y:auto}#panel.folded .body{display:none}#panel .group{color:#a1a1aa;letter-spacing:.06em;margin:10px 0 4px;font-size:10px}#panel .ctl{margin-bottom:10px}#panel .ctl .row{justify-content:space-between;align-items:baseline;gap:6px;display:flex}#panel .ctl label{color:#e4e4e7}#panel .ctl .val{color:#93c5fd;font-variant-numeric:tabular-nums;white-space:nowrap}#panel .hint{color:#a1a1aa;margin-top:3px;font-size:10px;line-height:1.45;display:none}#panel .ctl:hover .hint{display:block}#panel input[type=range]{accent-color:#93c5fd;width:100%;margin:5px 0 0}#panel .moods{grid-template-columns:repeat(3,1fr);gap:5px;margin-top:5px;display:grid}#panel .moods button{color:#e4e4e7;font:inherit;cursor:pointer;background:0 0;border:1px solid #ffffff24;border-radius:8px;padding:0;font-size:10px;overflow:hidden}#panel .moods button img{aspect-ratio:16/10;object-fit:cover;opacity:.9;width:100%;display:block}#panel .moods button span{padding:2px 0 3px;display:block}#panel .moods button.sel{border-color:#93c5fd}#panel .choices{flex-wrap:wrap;gap:4px;margin-top:5px;display:flex}#panel .choices button{color:#e4e4e7;font:inherit;cursor:pointer;white-space:nowrap;background:0 0;border:1px solid #ffffff24;border-radius:7px;flex:1;padding:4px 0;font-size:10px}#panel .choices button.sel{color:#93c5fd;border-color:#93c5fd}#panel .tog{cursor:pointer;justify-content:space-between;align-items:center;display:flex}#panel .tog input{accent-color:#93c5fd;width:14px;height:14px}#panel .trigs{gap:5px;display:flex}#panel .trigs button{color:#fafafa;font:inherit;cursor:pointer;background:#27272a;border:1px solid #fff3;border-radius:8px;flex:1;padding:6px 0}#panel .trigs button:active{background:#3f3f46}@media (max-width:640px){#panel{width:178px}#tip{display:none}}</style>
+  <script type="module" crossorigin src="./assets/index-k4t-lbqB.js"></script>
+</head>
+<body>
+<canvas id="view" tabindex="0"></canvas>
+<div id="cover"></div>
+<div id="progress"></div>
+<div id="credit" class="hud" hidden>하늘과 구름: SkyeShark의 Eanpa Sky (MIT)</div>
+<div id="tip" class="hud" hidden>드래그로 둘러보기 · 스크롤로 확대/축소</div>
+<div id="nogpu"><div class="card">
+  <h1>이 데모에는 그래픽 카드가 필요합니다</h1>
+  <p class="say">하늘은 WebGPU 또는 WebGL 2로 그려지는데, 이 브라우저는 둘 다 사용할 수 없습니다.</p>
+  <p class="more">하드웨어 가속이 켜진 최신 Chrome 또는 Edge에서 실행할 수 있습니다.</p>
+  <button hidden>다시 로드</button>
+  <small class="why"></small>
+</div></div>
+<div id="panel"></div>
+</body>
+</html>
