@@ -207,9 +207,9 @@ async function bakeErosion(size = 96) {
  */
 export async function createStylisedSky({ renderer, scene, camera, quality = 'medium', reflection = false, onProgress }) {
 	const say = onProgress ?? (() => {});
-	say(0.05, 'Making noise');
+	say(0.05, '노이즈 생성 중');
 	const weatherTex = await bakeWeather();
-	say(0.2, 'Making noise');
+	say(0.2, '노이즈 생성 중');
 	const erosionTex = await bakeErosion();
 	const weatherNode = texture(weatherTex);
 	const erosionNode = texture3D(erosionTex);
@@ -863,16 +863,16 @@ export async function createStylisedSky({ renderer, scene, camera, quality = 'me
 		async warm(sceneToWarm) {
 			sky.resize();
 			sky.update(0);
-			say(0.3, 'Building shaders');
+			say(0.3, '셰이더 빌드 중');
 			const savedTarget = renderer.getRenderTarget();
 			renderer.setRenderTarget(rawTarget);
 			await renderer.compileAsync(cloudQuad, cloudQuad.camera);
-			say(0.55, 'Building shaders');
+			say(0.55, '셰이더 빌드 중');
 			await renderer.compileAsync(resolveQuad, resolveQuad.camera);
 			renderer.setRenderTarget(savedTarget);
-			say(0.7, 'Building shaders');
+			say(0.7, '셰이더 빌드 중');
 			if (sceneToWarm) await renderer.compileAsync(sceneToWarm, camera);
-			say(0.85, 'Settling the clouds');
+			say(0.85, '구름 정돈하는 중');
 		},
 		dispose() {
 			if (scene) scene.remove(dome);

@@ -30,7 +30,7 @@ export async function boot({ block, recipe, times, started, deviceLost }) {
 	}
 	canvas.addEventListener('webglcontextlost', (e) => {
 		e.preventDefault();
-		deviceLost({ message: 'WebGL context lost' });
+		deviceLost({ message: 'WebGL 컨텍스트 손실' });
 	});
 	renderer.toneMapping = THREE.ACESFilmicToneMapping;
 	renderer.toneMappingExposure = 0.88;
@@ -62,7 +62,7 @@ export async function boot({ block, recipe, times, started, deviceLost }) {
 	const ground = buildGround(scene, sky);
 	const rain = buildRain(scene);
 	const bolt = buildBolt(scene);
-	block.progress(0.28, 'Laying the ground');
+	block.progress(0.28, '지형 만드는 중');
 	await wait();
 
 	// ---------------- view ----------------
@@ -257,7 +257,7 @@ export async function boot({ block, recipe, times, started, deviceLost }) {
 			renderer.render(scene, camera);
 		} else frame(1 / 60);
 		if (i % 4 === 0) await gpuDone();
-		block.progress(0.9 + (i / 24) * 0.08, 'Settling the clouds');
+		block.progress(0.9 + (i / 24) * 0.08, '구름 정돈하는 중');
 	}
 	bolt.update(0);
 	times.warmed = Math.round(performance.now() - started);

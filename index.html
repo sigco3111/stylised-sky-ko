@@ -1,15 +1,16 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Stylised sky</title>
+<title>Stylised Sky 한글판: 그림 같은 하늘</title>
 <link rel="icon" href="data:," />
 <style>
   html, body { margin: 0; height: 100%; overflow: hidden; background: #141a26; }
   #view { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; cursor: grab; }
   #view.drag { cursor: grabbing; }
   #cover { position: fixed; inset: 0; background: #141a26; }
+  #progress { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); font: 500 12px/1.4 ui-monospace, 'Cascadia Mono', Consolas, monospace; color: rgba(255, 255, 255, 0.75); text-shadow: 0 1px 3px rgba(10, 20, 40, 0.65); pointer-events: none; }
   .hud { position: fixed; pointer-events: none; font: 500 11px/1.3 ui-monospace, 'Cascadia Mono', Consolas, monospace; color: rgba(255, 255, 255, 0.82); text-shadow: 0 1px 3px rgba(10, 20, 40, 0.65); }
   #credit { left: 12px; top: 10px; }
   #tip { right: 12px; bottom: 8px; }
@@ -20,20 +21,55 @@
   #nogpu p { margin: 0 0 8px; color: #c4c4cc; }
   #nogpu small { display: block; margin-top: 10px; color: #a1a1aa; font: 500 11px/1.4 ui-monospace, monospace; }
   #nogpu button { margin-top: 8px; padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); background: #27272a; color: #fafafa; font: inherit; cursor: pointer; }
+
+  /* 스탠드얼론 컨트롤 패널 (GitHub Pages 배포용, patch.gg 임베드에서는 표시되지 않음) */
+  #panel { position: fixed; right: 10px; top: 10px; width: 216px; max-height: calc(100% - 20px); display: none; flex-direction: column; border-radius: 12px; background: rgba(9, 12, 20, 0.72); border: 1px solid rgba(255, 255, 255, 0.12); color: #e4e4e7; font: 500 11px/1.4 ui-monospace, 'Cascadia Mono', Consolas, monospace; backdrop-filter: blur(6px); z-index: 5; }
+  #panel.on { display: flex; }
+  #panel .head { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; cursor: pointer; user-select: none; color: #fafafa; }
+  #panel .head .fold { opacity: 0.7; }
+  #panel .body { overflow-y: auto; padding: 0 10px 10px; scrollbar-width: thin; }
+  #panel.folded .body { display: none; }
+  #panel .group { margin: 10px 0 4px; color: #a1a1aa; font-size: 10px; letter-spacing: 0.06em; }
+  #panel .ctl { margin-bottom: 10px; }
+  #panel .ctl .row { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+  #panel .ctl label { color: #e4e4e7; }
+  #panel .ctl .val { color: #93c5fd; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  #panel .hint { display: none; margin-top: 3px; color: #a1a1aa; font-size: 10px; line-height: 1.45; }
+  #panel .ctl:hover .hint { display: block; }
+  #panel input[type=range] { width: 100%; margin: 5px 0 0; accent-color: #93c5fd; }
+  #panel .moods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 5px; }
+  #panel .moods button { padding: 0; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 8px; background: none; color: #e4e4e7; font: inherit; font-size: 10px; cursor: pointer; overflow: hidden; }
+  #panel .moods button img { display: block; width: 100%; aspect-ratio: 16/10; object-fit: cover; opacity: 0.9; }
+  #panel .moods button span { display: block; padding: 2px 0 3px; }
+  #panel .moods button.sel { border-color: #93c5fd; }
+  #panel .choices { display: flex; gap: 4px; margin-top: 5px; flex-wrap: wrap; }
+  #panel .choices button { flex: 1; padding: 4px 0; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 7px; background: none; color: #e4e4e7; font: inherit; font-size: 10px; cursor: pointer; white-space: nowrap; }
+  #panel .choices button.sel { border-color: #93c5fd; color: #93c5fd; }
+  #panel .tog { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+  #panel .tog input { accent-color: #93c5fd; width: 14px; height: 14px; }
+  #panel .trigs { display: flex; gap: 5px; }
+  #panel .trigs button { flex: 1; padding: 6px 0; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; background: #27272a; color: #fafafa; font: inherit; cursor: pointer; }
+  #panel .trigs button:active { background: #3f3f46; }
+  @media (max-width: 640px) {
+    #panel { width: 178px; }
+    #tip { display: none; }
+  }
 </style>
 </head>
 <body>
 <canvas id="view" tabindex="0"></canvas>
 <div id="cover"></div>
-<div id="credit" class="hud" hidden>Sky and clouds: Eanpa Sky by SkyeShark (MIT)</div>
-<div id="tip" class="hud" hidden>Drag to look round. Scroll to zoom.</div>
+<div id="progress"></div>
+<div id="credit" class="hud" hidden>하늘과 구름: SkyeShark의 Eanpa Sky (MIT)</div>
+<div id="tip" class="hud" hidden>드래그로 둘러보기 · 스크롤로 확대/축소</div>
 <div id="nogpu"><div class="card">
-  <h1>This demo needs a graphics card</h1>
-  <p class="say">The sky is drawn with WebGPU or WebGL 2, and this browser can't give it either.</p>
-  <p class="more">It plays in Patch Desktop, and in any recent Chrome or Edge with hardware acceleration turned on.</p>
-  <button hidden>Reload</button>
+  <h1>이 데모에는 그래픽 카드가 필요합니다</h1>
+  <p class="say">하늘은 WebGPU 또는 WebGL 2로 그려지는데, 이 브라우저는 둘 다 사용할 수 없습니다.</p>
+  <p class="more">하드웨어 가속이 켜진 최신 Chrome 또는 Edge에서 실행할 수 있습니다.</p>
+  <button hidden>다시 로드</button>
   <small class="why"></small>
 </div></div>
+<div id="panel"></div>
 <script type="module" src="./src/demo.js"></script>
 </body>
 </html>

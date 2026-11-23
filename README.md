@@ -128,32 +128,32 @@ Both were a new browser profile on a 2560 x 1400 window, but the graphics driver
 ## Controls
 
 <!-- controls -->
-**For people** (the block page shows these):
+**사람용** (블록 페이지에 보이는 컨트롤):
 
-| id | Control | Type | Range | What it does |
+| id | 컨트롤 | 타입 | 범위 | 하는 일 |
 |---|---|---|---|---|
-| `mood` | Mood | choice | `day`, `dawn`, `dusk`, `wisps`, `overcast`, `storm`, `night`; default `dusk` | A time of day, a cloud cover, a wind and a weather together. Picking one moves the sliders. |
-| `time` | Time of day | number | 0 to 24h, default 17.45 | Hours, 0 to 24: the sun, the moon, the colours of the sky and the light on the clouds. |
-| `cover` | Cloud cover | number | 0 to 1, default 0.3 | From a clear sky, through scattered cumulus at about half, to a closed deck. |
-| `wind` | Wind | number | 0 to 80 m/s, default 12 | How fast the clouds drift and churn, and how much the lake ripples. At 0 the sky holds still. |
-| `rain` | Rain | number | 0 to 1, default 0 | Streaks of rain round the camera. It rains from any sky, so pair it with cover for a real downpour. |
+| `mood` | 분위기 | choice | `day`, `dawn`, `dusk`, `wisps`, `overcast`, `storm`, `night`; default `dusk` | 시간대, 구름량, 바람, 날씨를 한 번에. 고르면 슬라이더가 함께 움직입니다. |
+| `time` | 시간대 | number | 0 to 24h, default 17.45 | 0시부터 24시까지: 해와 달, 하늘색과 구름에 드는 빛이 모두 바뀝니다. |
+| `cover` | 구름량 | number | 0 to 1, default 0.3 | 맑은 하늘에서, 절반쯤 흩어진 뭉게구름을 지나, 하늘을 덮는 구름층까지. |
+| `wind` | 바람 | number | 0 to 80 m/s, default 12 | 구름이 흐르고 소용돌이치는 속도, 그리고 호수의 잔물결. 0이면 하늘이 멈춥니다. |
+| `rain` | 비 | number | 0 to 1, default 0 | 카메라 주위로 내리는 비 줄기. 어떤 하늘에서도 비가 오니, 구름량과 함께 올리면 진짜 폭우가 됩니다. |
 
-Triggers: `strike` (Lightning): A strike somewhere in view, with the clouds lit round it. `reset` (Reset): Everything back to the start: the mood, every slider and the view.
+트리거: `strike` (번개): 보이는 곳 어딘가에 번개가 치고, 주변 구름이 환하게 밝아집니다. `reset` (초기화): 분위기, 모든 슬라이더, 시점을 처음으로 되돌립니다.
 
-**For agents** (steer them over the channel):
+**에이전트용** (채널로 조작하는 컨트롤):
 
-| id | Control | Type | Range | What it does |
+| id | 컨트롤 | 타입 | 범위 | 하는 일 |
 |---|---|---|---|---|
-| `wind_dir` | Wind direction | number | 0 to 360°, default 200 | Where the wind blows to, in degrees. |
-| `puffs` | Puff size | number | 0.4 to 2.5, default 1 | Above 1, more and smaller clouds; below 1, fewer and bigger. |
-| `detail` | Edge detail | number | 0.4 to 2.5, default 1 | The scale of the erosion that carves the clouds: low is soft and rounded, high is busy and torn. |
-| `depth` | Cloud depth | number | 0.5 to 2.5×, default 1 | How tall the cloud layer is, against what the weather asks for. |
-| `paint` | Painted bands | number | 0 to 1, default 0 | Bands the light on the clouds into flat steps, for a more drawn look. |
-| `sun_arc` | Sun height | number | 15 to 85°, default 62 | How high the sun gets at noon, in degrees. |
-| `shadows` | Cloud shadows | number | 0 to 1, default 1 | How dark the clouds' shadows lie on the land. |
-| `cycle` | Time passing | toggle | default false | Runs the time of day on its own, a day in a minute, until turned off. |
-| `storms` | Lightning by itself | toggle | default true | Strikes every few seconds while the weather is a storm. |
-| `quality` | Quality | choice | `auto`, `low`, `medium`, `high`; default `auto` | How much the clouds spend. Auto starts at Medium and drops to Low if frames run slow. Changing it compiles nothing. |
+| `wind_dir` | 풍향 | number | 0 to 360°, default 200 | 바람이 불어가는 방향, 도(°) 단위. |
+| `puffs` | 구름 덩어리 크기 | number | 0.4 to 2.5, default 1 | 1보다 크면 더 많고 작은 구름, 작으면 더 적고 큰 구름. |
+| `detail` | 가장자리 디테일 | number | 0.4 to 2.5, default 1 | 구름을 깎아내는 침식의 정도: 낮으면 부드럽고 둥글게, 높으면 복잡하고 찢어진 듯하게. |
+| `depth` | 구름 두께 | number | 0.5 to 2.5×, default 1 | 날씨가 요구하는 높이에 견준 구름층의 높이. |
+| `paint` | 그림체 명암 단계 | number | 0 to 1, default 0 | 구름 위의 빛을 평평한 단계로 나눠, 더 그려낸 듯한 느낌으로. |
+| `sun_arc` | 태양 높이 | number | 15 to 85°, default 62 | 정오에 태양이 얼마나 높이 뜨는지, 도(°) 단위. |
+| `shadows` | 구름 그림자 | number | 0 to 1, default 1 | 땅에 드리운 구름 그림자가 얼마나 어두운지. |
+| `cycle` | 시간 흐름 | toggle | default false | 끌 때까지 시간대가 저절로 흐릅니다. 하루가 1분. |
+| `storms` | 자동 번개 | toggle | default true | 날씨가 폭풍인 동안 몇 초마다 번개가 칩니다. |
+| `quality` | 품질 | choice | `auto`, `low`, `medium`, `high`; default `auto` | 구름이 쓰는 연산량. 자동은 보통에서 시작해 프레임이 느려지면 낮음으로 내립니다. 바꿔도 재컴파일은 없습니다. |
 <!-- /controls -->
 
 ## Build the demo
